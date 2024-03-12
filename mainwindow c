@@ -1,0 +1,135 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+
+namespace Quizz
+{
+    public partial class MainWindow : Window
+    {
+        List<int> questionNumbers = new List<int> { 1, 2, 3, 4, 5 };
+        int qNum = 0;
+        int i;
+        int score;
+
+        public MainWindow()
+        {
+            InitializeComponent();
+            StartGame();
+            NextQuestion();
+        }
+
+        private void checkAnswer(object sender, RoutedEventArgs e)
+        {
+            Button senderButton = sender as Button;
+
+            if (senderButton.Tag.ToString() == "1")
+            {
+                score++;
+            }
+
+            qNum++;
+            UpdateProgressBar();
+
+            if (qNum == questionNumbers.Count)
+            {
+                scoreQuiz.Content = "Bravo !";
+            }
+            else
+            {
+                scoreQuiz.Content = "Réponse correcte ! " + score + "/" + questionNumbers.Count;
+            }
+
+            NextQuestion();
+        }
+
+        private void RestartGame()
+        {
+            score = 0;
+            qNum = -1;
+            StartGame();
+        }
+
+        private void NextQuestion()
+        {
+            if (qNum < questionNumbers.Count)
+            {
+                i = questionNumbers[qNum];
+            }
+            else
+            {
+                RestartGame();
+            }
+
+            foreach (var x in CanvasQuiz.Children.OfType<Button>())
+            {
+                x.Tag = "0";
+                x.Background = Brushes.AntiqueWhite;
+            }
+
+            switch (i)
+            {
+                case 1:
+                    txtQuestion.Text = "Cette image vous rappelle quelle célèbre série de films ?";
+                    rep1.Content = "Harry Potter";
+                    rep2.Content = "Le Seigneur des Anneaux";
+                    rep3.Content = "Indiana Jones";
+                    rep3.Tag = "1";
+                    CImage.Source = new BitmapImage(new Uri("C:\\Users\\SIO\\Downloads\\Quizz\\Quizz\\images\\1.png"));
+                    break;
+                case 2:
+                    txtQuestion.Text = "Quel est le nom de ce Pokémon ?";
+                    rep1.Content = "Pikachu";
+                    rep2.Content = "Raichu";
+                    rep3.Content = "Pichu";
+                    rep1.Tag = "1";
+                    CImage.Source = new BitmapImage(new Uri("C:\\Users\\SIO\\Downloads\\Quizz\\Quizz\\images\\2.png"));
+                    break;
+                case 3:
+                    txtQuestion.Text = "Quelle est la profession de ce personnage de jeu vidéo ?";
+                    rep1.Content = "Plombier";
+                    rep2.Content = "Un électricien";
+                    rep3.Content = "Un travailleur";
+                    rep1.Tag = "1";
+                    CImage.Source = new BitmapImage(new Uri("C:\\Users\\SIO\\Downloads\\Quizz\\Quizz\\images\\3.png"));
+                    break;
+                case 4:
+                    txtQuestion.Text = "Quelle est la valeur approximative de cette constante mathématique ?";
+                    rep1.Content = "1.32";
+                    rep2.Content = "2.79";
+                    rep3.Content = "3.14";
+                    rep3.Tag = "1";
+                    CImage.Source = new BitmapImage(new Uri("C:\\Users\\SIO\\Downloads\\Quizz\\Quizz\\images\\4.png"));
+                    break;
+                case 5:
+                    txtQuestion.Text = "Quel est le nom de cette langue ?";
+                    rep1.Content = "Chinois";
+                    rep2.Content = "Japonais";
+                    rep3.Content = "Coréen";
+                    rep3.Tag = "1";
+                    CImage.Source = new BitmapImage(new Uri("C:\\Users\\SIO\\Downloads\\Quizz\\Quizz\\images\\5.png"));
+                    break;
+            }
+        }
+
+        private void StartGame()
+        {
+            var randomList = questionNumbers.OrderBy(a => Guid.NewGuid()).ToList();
+            questionNumbers = randomList;
+            ordreQuiz.Content = null;
+            for (int i = 0; i < questionNumbers.Count; i++)
+            {
+                ordreQuiz.Content += questionNumbers[i].ToString();
+            }
+        }
+
+        private void UpdateProgressBar()
+        {
+            double progressPercentage = (double)(qNum + 1) / questionNumbers.Count * 100;
+            progressBar.Value = progressPercentage;
+        }
+    }
+}
